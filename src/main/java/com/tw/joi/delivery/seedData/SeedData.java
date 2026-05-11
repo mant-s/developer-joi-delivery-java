@@ -14,6 +14,8 @@ import java.util.Random;
 
 public class SeedData {
 
+    private static Random random = new Random();
+
     public static GroceryStore store101 = SeedData.createStore("Fresh Picks", "store101");
     public static GroceryStore store102 = SeedData.createStore("Natural Choice", "store102");
 
@@ -60,7 +62,7 @@ public class SeedData {
     }
 
     public static int getRandomNumberUsingNextInt(int min, int max) {
-        Random random = new Random();
+        // Random random = new Random();
         return random.nextInt(max - min) + min;
     }
 
