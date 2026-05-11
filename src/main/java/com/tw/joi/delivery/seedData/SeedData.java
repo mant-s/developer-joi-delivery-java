@@ -3,9 +3,11 @@ package com.tw.joi.delivery.seedData;
 import com.tw.joi.delivery.domain.Cart;
 import com.tw.joi.delivery.domain.GroceryProduct;
 import com.tw.joi.delivery.domain.GroceryStore;
+import com.tw.joi.delivery.domain.ProductLookupKey;
 import com.tw.joi.delivery.domain.User;
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -21,10 +23,13 @@ public class SeedData {
         "user101", createCartForUser("user101", "John", "Doe", "cart101"),
         "user102", createCartForUser("user102", "Rachel", "Zane", "cart102"));
 
-    public static List<GroceryProduct> groceryProducts =
-        Arrays.asList(createGroceryProduct("Wheat Bread", "product101", store101),
-                      createGroceryProduct("Spinach", "product102", store101),
-                      createGroceryProduct("Crackers", "product103", store101));
+    public static Map<ProductLookupKey, GroceryProduct> groceryProducts = new HashMap<>();
+
+    static {
+        createGroceryProduct("Wheat Bread", "product101", store101);
+        createGroceryProduct("Spinach", "product102", store101);
+        createGroceryProduct("Crackers", "product103", store101);
+    }
 
     public static List<User> users = Arrays.asList(user101);
 
@@ -61,7 +66,7 @@ public class SeedData {
 
     private static GroceryProduct createGroceryProduct(String productName,
                                                        String productId, GroceryStore store) {
-        return GroceryProduct.builder()
+        GroceryProduct product = GroceryProduct.builder()
             .productName(productName)
             .productId(productId)
             .mrp(BigDecimal.valueOf(10.5))
@@ -70,6 +75,10 @@ public class SeedData {
             .threshold(10)
             .availableStock(30)
             .build();
+
+        groceryProducts.put(new ProductLookupKey(productId, store.getOutletId()), product);
+
+        return product;
     }
 
 }
