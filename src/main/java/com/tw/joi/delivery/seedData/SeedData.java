@@ -11,10 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class SeedData {
-
-    private static Random random = new Random();
 
     public static GroceryStore store101 = SeedData.createStore("Fresh Picks", "store101");
     public static GroceryStore store102 = SeedData.createStore("Natural Choice", "store102");
@@ -62,8 +61,7 @@ public class SeedData {
     }
 
     public static int getRandomNumberUsingNextInt(int min, int max) {
-        // Random random = new Random();
-        return random.nextInt(max - min) + min;
+        return ThreadLocalRandom.current().nextInt(min, max);
     }
 
     private static GroceryProduct createGroceryProduct(String productName,
