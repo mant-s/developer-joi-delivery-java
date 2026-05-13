@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.tw.joi.delivery.domain.Cart;
 import com.tw.joi.delivery.dto.request.AddProductRequest;
 import com.tw.joi.delivery.service.CartService;
+import com.tw.joi.delivery.service.ProductService;
+
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ public class CartControllerTest {
     @MockitoBean
     private CartService cartService;
 
+    @MockitoBean
+    private ProductService productService;
+
     ObjectMapper mapper = new ObjectMapper();
 
     @Test
@@ -39,7 +44,7 @@ public class CartControllerTest {
         addProductRequest.setOutletId("store101");
 
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
-        String requestJson=ow.writeValueAsString(addProductRequest );
+        String requestJson=ow.writeValueAsString(addProductRequest);
 
         mockMvc.perform(MockMvcRequestBuilders.post(url)
                             .content(requestJson)
@@ -49,14 +54,15 @@ public class CartControllerTest {
 
     @Test
     void shouldReturnTheCart() throws Exception {
-        String url = "/cart/view?userId={userId}";
+        String url = "/cart/view";
         String userId="user101";
         Cart cart= Cart.builder()
             .cartId("cart101")
             .build();
         when(cartService.getCartForUser(userId)).thenReturn(cart);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(url,"user101")
+        mockMvc.perform(MockMvcRequestBuilders.get(url)
+                            .param("userId", userId)
                             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(MockMvcResultMatchers.jsonPath("$.cartId", Is.is("cart101")));
