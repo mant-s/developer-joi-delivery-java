@@ -77,6 +77,7 @@ public class SeedData {
             .build();
 
         groceryProducts.put(new ProductLookupKey(productId, store.getOutletId()), product);
+        store.getInventory().add(product);
 
         return product;
     }

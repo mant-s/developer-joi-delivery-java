@@ -1,6 +1,8 @@
 package com.tw.joi.delivery.domain;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +18,7 @@ public class GroceryProduct extends Product {
     private BigDecimal sellingPrice;
     private BigDecimal weight;
 
-    private int expiryDate;
+    private LocalDate expiryDate;
 
     private int threshold;
 
@@ -28,7 +30,7 @@ public class GroceryProduct extends Product {
 
     @Builder
     public GroceryProduct(String productId, String productName, BigDecimal mrp, Cart cart,
-                          BigDecimal sellingPrice, BigDecimal weight, int expiryDate, int threshold,
+                          BigDecimal sellingPrice, BigDecimal weight, LocalDate expiryDate, int threshold,
                           int availableStock, GroceryStore store, BigDecimal discount) {
         super(productId, productName,  mrp);
         this.sellingPrice = sellingPrice;
@@ -40,4 +42,22 @@ public class GroceryProduct extends Product {
         this.discount = discount;
     }
 
+    public boolean isLowStock() {
+        return availableStock <= threshold && availableStock > 0;
+    }
+
+    public boolean isOutOfStock() {
+        return availableStock == 0;
+    }
+
+    public void reduceStock(int quantity) {
+        if (quantity > availableStock) {
+            throw new IllegalArgumentException("Not enough stock available");
+        }
+        this.availableStock -= quantity;
+    }
+
+    public void updateStock() {
+        if (expiryDate != null && LocalDate.now().isAfter(expiryDate)) availableStock = 0;
+    }
 }
